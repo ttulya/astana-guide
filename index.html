@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/> -->
+  <title>Гид по Астане</title>
+  <!-- <meta name="description" content="Путеводитель по Астане — столице Казахстана. Информация о достопримечательностях, видео, карта и контакты." />
+  <meta name="keywords" content="Астана, гид, Казахстан, достопримечательности, Байтерек, Хан Шатыр" />
+  <link rel="icon" href="favicon.ico" /> -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      padding-top: 70px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+      header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 3000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 70px; /* это делает отступ сверху */
+}
+
+
+    header h1 {
+      font-size: 1.4em;
+    }
+
+    /* Меню-гамбургер */
+    .menu-toggle {
+      display: none;
+    }
+
+    .burger {
+      font-size: 28px;
+      background: none;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-right: 15px;
+      display: none;
+    }
+
+    .side-menu {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 230px;
+  height: 100%;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  padding-top: 70px;
+  z-index: 2500;
+  transition: left 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-menu nav {
+  display: flex;
+  flex-direction: column; /* <<< ВАЖНО: ссылки будут одна под другой */
+}
+
+.side-menu nav a {
+  color: white;
+  padding: 15px 20px;
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+    .menu-toggle:checked + label + .side-menu {
+      left: 0;
+    }
+
+   .burger {
+  display: block;
+}
+    nav a:hover { color: #ffd700; }
+    section {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    h2 { color: #0072ff; margin-bottom: 15px; }
+    ul li { margin-bottom: 10px; }
+    .tickets { text-align: center; }
+    .ticket-btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 20px;
+      background: #0072ff;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .ticket-btn:hover { background: #005ec4; }
+    .review { margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
+    .review:last-child { border-bottom: none; }
+    .review strong { color: #0072ff; }
+    img {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 20px;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    img:hover { transform: scale(1.05); }
+    .contact a {
+      color: #0072ff;
+      text-decoration: none;
+      transition: text-decoration 0.3s;
+    }
+    .contact a:hover { text-decoration: underline; }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #222;
+      color: white;
+      margin-top: 40px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .video-section { text-align: center; margin-top: 30px; }
+    .video-section button {
+      background-color: #0072ff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .video-section button:hover { background-color: #005ec4; }
+    .closeBtn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+    }
+    .popup-button {
+      background-color: #00c6ff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .popup-button:hover { background-color: #009ee0; }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .popup {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    #scrollTopBtn {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #0072ff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1500;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      transition: background-color 0.3s;
+    }
+    #scrollTopBtn:hover { background-color: #005ec4; }
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5em; }
+      nav a { margin: 0 8px; font-size: 0.9em; }
+      section { margin: 15px 10px; padding: 20px; }
+      #scrollTopBtn { bottom: 20px; right: 20px; padding: 8px 12px; }
+    }
+    .share-buttons { margin-top: 20px; text-align: center; }
+    .share-buttons button {
+      background-color: #0072ff;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      margin: 0 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: background-color 0.3s;
+    }
+    .share-buttons button:hover { background-color: #005ec4; }
+    #reviews {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    #reviews h2 { color: #0072ff; margin-bottom: 20px; }
+    .review { margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
+    .review:last-child { border-bottom: none; }
+    .review strong { display: block; margin-bottom: 5px; color: #0072ff; }
+
+    .video-section {
+  max-width: 800px;
+  margin: 30px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.video-section h2 {
+  color: #0072ff;
+  margin-bottom: 15px;
+}
+
+.video-section video {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.instagram-buttons {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.insta-btn {
+  background-color: #0072ff;   /* фон — синий */
+  color: white !important;     /* текст — белый (обязательно видно) */
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: background 0.3s ease;
+}
+
+
+.insta-btn:hover {
+  background-color: #005ec4; /* тёмно-синий при наведении */
+}
+
+.site-title {
+  font-size: 1.3em;
+  font-weight: 600;
+  color: white;
+}
+.site-title {
+  margin-left: 10px;
+}
+
+.menu-toggle:checked ~ .side-menu {
+  left: 0;
+}
+
+  </style>
+</head>
+<body>
+
+   <input type="checkbox" id="menu-toggle" class="menu-toggle" />
+<header>
+  <label for="menu-toggle" class="burger">&#9776;</label>
+  <span class="site-title">Гид по Астане</span>
+</header> 
+<aside class="side-menu">
+  <nav>
+    <a href="#about" onclick="document.getElementById('menu-toggle').checked = false">О городе</a>
+    <a href="#places" onclick="document.getElementById('menu-toggle').checked = false">Что посмотреть</a>
+    <a href="#map" onclick="document.getElementById('menu-toggle').checked = false">Карта</a>
+    <a href="#video" onclick="document.getElementById('menu-toggle').checked = false">Видео</a>
+    <a href="#reviews" onclick="document.getElementById('menu-toggle').checked = false">Отзывы</a>
+    <a href="#contact" onclick="document.getElementById('menu-toggle').checked = false">Контакты</a>
+  </nav>
+</aside>
+
+
+  <section id="about" class="about">
+    <h2>О городе</h2>
+    <p>Астана — современный и яркий город, сочетающий футуристическую архитектуру, богатую культуру и гостеприимную атмосферу. Это столица, в которой прошлое и будущее соединяются в настоящем.
+    
+    </p>
+    <button class="popup-button" onclick="document.getElementById('popupOverlay').style.display='flex'">Подробнее об Астане</button>
+  </section>
+
+  <section id="video" class="video-section">
+  <h2>Видео об Астане</h2>
+  <video controls width="100%" poster="astana/poster.jpg">
+    <source src="astana.mp4" type="video/mp4" />
+    Ваш браузер не поддерживает видео.
+  </video>
+</section>
+
+  <section id="tickets" class="tickets">
+    <h2>Купить билеты</h2>
+    <a href="https://ticketon.kz/astana/museums" target="_blank" class="ticket-btn">🎫 Билеты в музеи (Ticketon)</a>
+    <a href="https://astana.citypass.kz/ru/" target="_blank" class="ticket-btn">📍 Astana Pass – пакетный доступ</a>
+    <a href="https://www.getyourguide.com/astana-l1416/" target="_blank" class="ticket-btn">🚍 Экскурсии и туры (GetYourGuide)</a>
+  </section>
+  <section id="weather">
+    <h2>Погода в Астане</h2>
+    <iframe src="https://www.meteoblue.com/en/weather/widget/daily/astana_kazakhstan_1526273?geoloc=fixed&days=5&tempunit=CELSIUS" frameborder="0" width="100%" height="300"></iframe>
+  </section>
+  <section id="places" class="places">
+    <h2>Что посмотреть</h2>
+    <ul>
+      <li><strong>Байтерек:</strong> символ города и смотровая площадка.</li>
+      <li><strong>Хан Шатыр:</strong> необычный торговый центр в виде шатра.</li>
+      <li><strong>Хазрет Султан:</strong> величественная мечеть с богатым убранством.</li>
+      <li><strong>Нур-Алем:</strong> павильон ЭКСПО в виде сферы.</li>
+    </ul>
+    <img src="bayterek.jpg" alt="Байтерек" loading="lazy" />
+  </section>
+ 
+  <section id="map" class="map">
+  <h2>Карта достопримечательностей</h2>
+  <iframe 
+    src="https://yandex.kz/map-widget/v1/?um=constructor%3Af33e74236b2436f8cce0de6e9ee0fa452465c3c1153934e5b98e176899f44d71&amp;source=constructor" 
+    width="100%" 
+    height="400" 
+    frameborder="0" 
+    allowfullscreen 
+    loading="lazy"
+    style="border-radius: 10px;">
+  </iframe>
+</section>
+
+  <section id="reviews">
+    <h2>Отзывы посетителей</h2>
+    <div class="review">
+      <strong>Айсулу:</strong>
+      <p>Очень понравилась экскурсия по Байтереку, замечательное место с потрясающим видом.</p>
+    </div>
+    <div class="review">
+      <strong>Айдана:</strong>
+      <p>Красивая архитектура города, особенно впечатлил Хан Шатыр и Нур-Алем.</p>
+    </div>
+    <div class="review">
+      <strong>Аружан:</strong>
+      <p>Отличный гид и полезная информация для туристов. Спасибо!</p>
+    </div>
+  </section>
+  <section id="contact" class="contact">
+  <h2>Контакты</h2>
+  <div class="instagram-buttons">
+    <a href="https://www.instagram.com/ttullya?igsh=anU3dmQ2MmdueTdq&utm_source=qr" target="_blank" class="insta-btn">❤️Толеугул</a>
+    <a href="https://www.instagram.com/mikqzxw?igsh=M29tdDgybnJzb2po" target="_blank" class="insta-btn">❤️Малика</a>
+  </div>
+</section>
+
+
+  <footer>
+    <p>&copy; 2025 Гид по Астане. Все права защищены.</p>
+  </footer>
+  <div id="popupOverlay" class="overlay" onclick="if(event.target === this){this.style.display='none'}">
+    <div class="popup">
+      <span class="closeBtn" onclick="document.getElementById('popupOverlay').style.display='none'">&times;</span>
+      <h2>Интересные факты</h2>
+      <p>Астана была основана в 1830 году как Акмола. Сегодня это динамично развивающаяся столица с населением более миллиона человек. Здесь проходят международные выставки, форумы и культурные события.</p>
+    </div>
+  </div>
+  <button id="scrollTopBtn" aria-label="Наверх">↑</button>
+  <script>
+   
+   
+    // Кнопка Наверх
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    window.onscroll = () => {
+      if (window.pageYOffset > 300) {
+        scrollBtn.style.display = 'block';
+      } else {
+        scrollBtn.style.display = 'none';
+      }
+    };
+    scrollBtn.onclick = () => {
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    };
+  </script>
+</body>
+</html>
