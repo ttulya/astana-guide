@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RelaxCaps — Личный кабинет</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:#f0f4f8;padding-top:70px}
+header{position:fixed;top:0;left:0;width:100%;height:60px;background:linear-gradient(to right,#00c6ff,#0072ff);display:flex;align-items:center;color:white;padding:0 20px;z-index:3000}
+.burger{width:32px;height:22px;margin-right:15px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between}
+.burger div{height:4px;background:white;border-radius:2px}
+#menuToggle{display:none}
+.side-menu{position:fixed;top:0;left:-250px;width:230px;height:100%;background:linear-gradient(to bottom,#00c6ff,#0072ff);padding-top:80px;transition:.3s;z-index:2600}
+#menuToggle:checked + header + .side-menu{left:0}
+.side-menu a{color:white;display:block;padding:15px 20px;text-decoration:none;font-weight:600;border-bottom:1px solid rgba(255,255,255,0.15)}
+.side-menu a:hover{color:#ffd700}
+section{max-width:900px;margin:20px auto;background:white;padding:25px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+h2{color:#0072ff;margin-bottom:15px}
+h3{color:#333;margin-top:15px;margin-bottom:8px}
+input{width:100%;padding:10px;margin:6px 0;border-radius:6px;border:1px solid #aaa}
+.btn{display:inline-block;background:#0072ff;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;margin-top:8px;cursor:pointer;border:none}
+.btn:hover{background:#005ec4}
+.info-box{background:#f5f8ff;border-radius:8px;padding:10px 12px;margin-bottom:10px;border:1px solid #dde5ff;font-size:0.95em}
+.booking-item{padding:8px 10px;border-radius:8px;border:1px solid #eee;margin-bottom:8px;background:#fafafa;font-size:0.95em}
+.booking-item b{color:#0072ff}
+
+/* Статусы бронирований */
+.status-badge{
+  display:inline-block;
+  padding:3px 9px;
+  border-radius:999px;
+  font-size:0.8em;
+  color:#fff;
+  margin-left:4px;
+}
+.status-new{background:#607d8b;}        /* Новая — серая */
+.status-processed{background:#ff9800;}  /* Обработана — оранжевая */
+.status-done{background:#4caf50;}       /* Завершён — зелёная */
+.status-cancelled{background:#f44336;}  /* Отменена — красная */
+</style>
+</head>
+<body>
+
+<!-- Меню открыто по умолчанию -->
+<input type="checkbox" id="menuToggle" checked />
+
+<header>
+  <label for="menuToggle" class="burger"><div></div><div></div><div></div></label>
+  <span style="font-size:1.3em;font-weight:600">RelaxCaps</span>
+</header>
+
+<aside class="side-menu">
+  <a href="index.html">Главная</a>
+  <a href="profile.html">Личный кабинет</a>
+  <a href="booking.html">Бронирование</a>
+  <a href="reviews.html">Отзывы и оценки</a>
+  <a href="contact.html">Контакты</a>
+</aside>
+
+<section>
+  <h2>Личный кабинет</h2>
+
+  <div id="authBlock">
+    <div class="info-box">
+      <p><b>Регистрация нового пользователя</b></p>
+      <p>Заполните данные, чтобы создать профиль и сохранять свои бронирования.</p>
+    </div>
+    <input id="firstName" placeholder="Имя">
+    <input id="lastName" placeholder="Фамилия">
+    <input id="phone" placeholder="Номер телефона">
+    <input id="authLogin" placeholder="Логин">
+    <input id="authPass" type="password" placeholder="Пароль">
+    <button class="btn" onclick="login()">Войти</button>
+    <button class="btn" onclick="register()">Создать аккаунт</button>
+  </div>
+
+  <div id="profileBlock" style="display:none">
+    <h3>Профиль</h3>
+    <div id="userInfo" class="info-box"></div>
+
+    <h3>Ваши бронирования</h3>
+    <div id="myBookings"></div>
+
+    <button class="btn" onclick="logout()">Выйти</button>
+  </div>
+</section>
+
+<script>
+let user = JSON.parse(localStorage.getItem("user") || "null");
+
+function register(){
+  const firstName = firstNameInput.value.trim();
+  const lastName  = lastNameInput.value.trim();
+  const phone     = phoneInput.value.trim();
+  const login     = authLogin.value.trim();
+  const pass      = authPass.value.trim();
+
+  if(!firstName || !lastName || !phone || !login || !pass){
+    alert("Пожалуйста, заполните все поля для регистрации.");
+    return;
+  }
+
+  const newUser = {
+    firstName,
+    lastName,
+    phone,
+    login,
+    pass,
+    bookings: [] // можно не использовать, но пусть будет
+  };
+
+  localStorage.setItem("user", JSON.stringify(newUser));
+  user = newUser;
+  alert("Аккаунт создан! Теперь вы можете просматривать свои бронирования.");
+  renderProfile();
+}
+
+function login(){
+  const login = authLogin.value.trim();
+  const pass  = authPass.value.trim();
+
+  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  if(storedUser && storedUser.login === login && storedUser.pass === pass){
+    user = storedUser;
+    renderProfile();
+  } else {
+    alert("Неверный логин или пароль.");
+  }
+}
+
+function renderProfile(){
+  if(!user) return;
+
+  authBlock.style.display = "none";
+  profileBlock.style.display = "block";
+
+  userInfo.innerHTML = `
+    <p><b>Имя:</b> ${user.firstName || "-"} ${user.lastName || ""}</p>
+    <p><b>Телефон:</b> ${user.phone || "-"}</p>
+    <p><b>Логин:</b> ${user.login || "-"}</p>
+  `;
+
+  // Берём все бронирования и фильтруем по телефону пользователя
+  const allBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
+  const bookings = allBookings.filter(b => b.phone === user.phone);
+
+  if(!bookings.length){
+    myBookings.innerHTML = "<p>У вас пока нет бронирований.</p>";
+  } else {
+    myBookings.innerHTML = bookings.map(b => {
+      const statusValue = b.status || "new";
+      const labels = {
+        new: "Новая",
+        processed: "Обработана",
+        done: "Сеанс завершён",
+        cancelled: "Отменена"
+      };
+      const label = labels[statusValue] || "Новая";
+
+      return `
+        <div class="booking-item">
+          <p><b>ID:</b> ${b.id}</p>
+          <p><b>Дата:</b> ${b.date} в ${b.time}, ${b.duration} ч.</p>
+          <p><b>Телефон:</b> ${b.phone}</p>
+          <p><b>Статус:</b>
+            <span class="status-badge status-${statusValue}">${label}</span>
+          </p>
+        </div>
+      `;
+    }).join("");
+  }
+}
+
+function logout(){
+  profileBlock.style.display = "none";
+  authBlock.style.display = "block";
+}
+
+if(user) renderProfile();
+
+// Удобные ссылки на элементы:
+const firstNameInput = document.getElementById("firstName");
+const lastNameInput  = document.getElementById("lastName");
+const phoneInput     = document.getElementById("phone");
+
+</script>
+
+</body>
+</html>

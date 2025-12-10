@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RelaxCaps — Отзывы</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Montserrat',sans-serif;
+  background:#f0f4f8;
+  padding-top:70px;
+}
+
+header{
+  position:fixed;top:0;left:0;width:100%;height:60px;
+  background:linear-gradient(to right,#00c6ff,#0072ff);
+  display:flex;align-items:center;color:white;
+  padding:0 20px;z-index:3000;
+}
+
+.burger{
+  width:32px;height:22px;margin-right:15px;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+
+.burger div{
+  height:4px;background:white;border-radius:2px;
+}
+
+#menuToggle{display:none}
+
+.side-menu{
+  position:fixed;top:0;left:-250px;width:230px;height:100%;
+  background:linear-gradient(to bottom,#00c6ff,#0072ff);
+  padding-top:80px;transition:.3s;z-index:2600;
+}
+
+/* Меню открыто при загрузке */
+#menuToggle:checked + header + .side-menu{
+  left:0;
+}
+
+.side-menu a{
+  color:white;display:block;padding:15px 20px;text-decoration:none;
+  font-weight:600;border-bottom:1px solid rgba(255,255,255,0.15);
+}
+
+.side-menu a:hover{color:#ffd700}
+
+section{
+  max-width:900px;margin:20px auto;background:white;
+  padding:25px;border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+h2{color:#0072ff;margin-bottom:15px}
+h3{margin-top:20px;margin-bottom:10px;color:#333}
+
+textarea{
+  width:100%;
+  min-height:80px;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #aaa;
+  font-family:'Montserrat',sans-serif;
+  resize:vertical;
+  margin:6px 0 10px;
+}
+
+select{
+  padding:8px 10px;
+  border-radius:6px;
+  border:1px solid #aaa;
+  font-family:'Montserrat',sans-serif;
+  margin-right:8px;
+}
+
+.btn{
+  display:inline-block;
+  background:#0072ff;
+  color:white;
+  padding:8px 16px;
+  border-radius:6px;
+  border:none;
+  cursor:pointer;
+  font-size:0.95em;
+  margin-top:6px;
+}
+
+.btn:hover{background:#005ec4}
+
+.review-item{
+  border-bottom:1px solid #eee;
+  padding:10px 0;
+  font-size:0.95em;
+}
+
+.review-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:4px;
+}
+
+.review-name{
+  font-weight:600;
+  color:#0072ff;
+}
+
+.review-date{
+  font-size:0.8em;
+  color:#777;
+}
+
+.review-stars{
+  margin-bottom:4px;
+}
+
+.filter-box{
+  background:#f5f8ff;
+  border-radius:8px;
+  padding:10px 12px;
+  border:1px solid #dde5ff;
+  font-size:0.9em;
+  margin-bottom:15px;
+}
+
+.filter-box label{
+  font-size:0.85em;
+  margin-right:6px;
+}
+
+.filter-box input[type="date"]{
+  padding:6px 8px;
+  border-radius:6px;
+  border:1px solid #aaa;
+  font-family:'Montserrat',sans-serif;
+  margin-right:8px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Меню открыто по умолчанию -->
+<input type="checkbox" id="menuToggle" checked />
+
+<header>
+  <label for="menuToggle" class="burger">
+    <div></div><div></div><div></div>
+  </label>
+  <span style="font-size:1.3em;font-weight:600">RelaxCaps</span>
+</header>
+
+<aside class="side-menu">
+  <a href="index.html">Главная</a>
+  <a href="profile.html">Личный кабинет</a>
+  <a href="booking.html">Бронирование</a>
+  <a href="reviews.html">Отзывы и оценки</a>
+  <a href="contact.html">Контакты</a>
+</aside>
+
+<section>
+  <h2>Отзывы</h2>
+
+  <!-- Фильтр по дате -->
+  <div class="filter-box">
+    <div style="margin-bottom:6px;"><b>Фильтр по дате:</b></div>
+    <label for="fromDate">с</label>
+    <input type="date" id="fromDate">
+    <label for="toDate">по</label>
+    <input type="date" id="toDate">
+    <button class="btn" onclick="applyFilter()">Применить</button>
+    <button class="btn" style="background:#777;margin-left:6px;" onclick="resetFilter()">Сбросить</button>
+  </div>
+
+  <div id="reviewsList"></div>
+
+  <h3>Оставить отзыв</h3>
+  <p style="font-size:0.9em;color:#555;margin-bottom:6px;">
+    Отзыв будет сохранён вместе с вашим именем (если вы авторизованы) и текущей датой.
+  </p>
+  <textarea id="reviewText" placeholder="Ваш отзыв"></textarea>
+  <div style="margin-bottom:6px;">
+    <select id="reviewScore">
+      <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+      <option value="4">⭐⭐⭐⭐ (4)</option>
+      <option value="3">⭐⭐⭐ (3)</option>
+      <option value="2">⭐⭐ (2)</option>
+      <option value="1">⭐ (1)</option>
+    </select>
+    <button class="btn" onclick="addReview()">Отправить</button>
+  </div>
+</section>
+
+<script>
+let allReviews = [];
+let fromFilter = "";
+let toFilter = "";
+
+// Загружаем текущего пользователя (если есть)
+let currentUser = JSON.parse(localStorage.getItem("user") || "null");
+
+function loadReviews(){
+  allReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+
+  // Сортировка: новые сверху
+  allReviews.sort((a,b) => (b.date || "").localeCompare(a.date || ""));
+
+  renderReviews();
+}
+
+function renderReviews(){
+  const list = document.getElementById("reviewsList");
+  let filtered = allReviews;
+
+  if(fromFilter){
+    filtered = filtered.filter(r => r.date >= fromFilter);
+  }
+  if(toFilter){
+    filtered = filtered.filter(r => r.date <= toFilter);
+  }
+
+  if(!filtered.length){
+    list.innerHTML = "<p style='color:#777;font-style:italic;'>Пока нет отзывов за выбранный период.</p>";
+    return;
+  }
+
+  list.innerHTML = filtered.map(r => `
+    <div class="review-item">
+      <div class="review-header">
+        <span class="review-name">${r.name || "Гость"}</span>
+        <span class="review-date">${r.date || ""}</span>
+      </div>
+      <div class="review-stars">${"⭐".repeat(Number(r.score) || 0)}</div>
+      <div>${r.text}</div>
+    </div>
+  `).join("");
+}
+
+function addReview(){
+  const text = document.getElementById("reviewText").value.trim();
+  const score = Number(document.getElementById("reviewScore").value);
+
+  if(!text){
+    alert("Введите отзыв!");
+    return;
+  }
+
+  // Имя пользователя, если он авторизован
+  let name = "Гость";
+  if(currentUser){
+    const fn = currentUser.firstName || "";
+    const ln = currentUser.lastName || "";
+    name = (fn + " " + ln).trim() || "Пользователь";
+  }
+
+  // Текущая дата в формате YYYY-MM-DD
+  const today = new Date();
+  const dateStr = today.toISOString().slice(0,10);
+
+  const newReview = { text, score, name, date: dateStr };
+
+  let arr = JSON.parse(localStorage.getItem("reviews") || "[]");
+  arr.push(newReview);
+  localStorage.setItem("reviews", JSON.stringify(arr));
+
+  document.getElementById("reviewText").value = "";
+  loadReviews();
+}
+
+function applyFilter(){
+  fromFilter = document.getElementById("fromDate").value || "";
+  toFilter   = document.getElementById("toDate").value || "";
+  renderReviews();
+}
+
+function resetFilter(){
+  fromFilter = "";
+  toFilter   = "";
+  document.getElementById("fromDate").value = "";
+  document.getElementById("toDate").value = "";
+  renderReviews();
+}
+
+loadReviews();
+</script>
+
+</body>
+</html>

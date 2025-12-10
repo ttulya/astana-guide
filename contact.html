@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RelaxCaps — Контакты</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Montserrat',sans-serif;
+  background:#f0f4f8;
+  padding-top:70px;
+}
+
+header{
+  position:fixed;top:0;left:0;width:100%;height:60px;
+  background:linear-gradient(to right,#00c6ff,#0072ff);
+  display:flex;align-items:center;color:white;
+  padding:0 20px;z-index:3000;
+}
+
+.burger{
+  width:32px;height:22px;margin-right:15px;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.burger div{height:4px;background:white;border-radius:2px}
+
+#menuToggle{display:none}
+
+.side-menu{
+  position:fixed;top:0;left:-250px;width:230px;height:100%;
+  background:linear-gradient(to bottom,#00c6ff,#0072ff);
+  padding-top:80px;transition:.3s;z-index:2600;
+}
+
+/* Меню открыто по умолчанию */
+#menuToggle:checked + header + .side-menu{
+  left:0;
+}
+
+.side-menu a{
+  color:white;display:block;padding:15px 20px;
+  text-decoration:none;font-weight:600;
+  border-bottom:1px solid rgba(255,255,255,0.15);
+}
+.side-menu a:hover{color:#ffd700}
+
+section{
+  max-width:900px;margin:20px auto;background:white;
+  padding:25px;border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+h2{color:#0072ff;margin-bottom:15px}
+
+/* QR-блок */
+.qr-box{
+  margin-top:25px;
+  background:#f5f8ff;
+  border-radius:12px;
+  padding:20px;
+  border:1px solid #dde5ff;
+  text-align:center;
+  box-shadow:0 3px 8px rgba(0,0,0,0.08);
+}
+
+.qr-box img{
+  width:180px;
+  height:180px;
+  border-radius:10px;
+  margin-bottom:12px;
+}
+
+.btn{
+  display:inline-block;
+  background:#0072ff;
+  color:white;
+  padding:10px 18px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:600;
+  transition:.2s;
+}
+.btn:hover{background:#005ec4}
+</style>
+</head>
+
+<body>
+
+<!-- Меню открыто -->
+<input type="checkbox" id="menuToggle" checked />
+
+<header>
+  <label for="menuToggle" class="burger">
+    <div></div><div></div><div></div>
+  </label>
+  <span style="font-size:1.3em;font-weight:600">RelaxCaps</span>
+</header>
+
+<aside class="side-menu">
+  <a href="index.html">Главная</a>
+  <a href="profile.html">Личный кабинет</a>
+  <a href="booking.html">Бронирование</a>
+  <a href="reviews.html">Отзывы и оценки</a>
+  <a href="contact.html">Контакты</a>
+</aside>
+
+<section>
+<h2>Контакты</h2>
+
+<p>Email: <b>info@relaxcaps.kz</b></p>
+<p>Телефон: <b>+7 700 000 00 00</b></p>
+
+<!-- QR-блок Instagram -->
+<div class="qr-box">
+  <h3 style="color:#0072ff;margin-bottom:10px;font-size:1.1em;">Наш Instagram</h3>
+
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://www.instagram.com/relaxcaps.kz"
+       alt="QR Instagram">
+
+  <p style="margin-bottom:12px;color:#444;">
+    Сканируйте QR-код, чтобы перейти на страницу RelaxCaps
+    или же намите на кнопку ниже.
+  </p>
+
+  <a href="https://www.instagram.com/relaxcaps.kz" target="_blank" class="btn">
+    Перейти в Instagram
+  </a>
+</div>
+
+</section>
+
+</body>
+</html>
