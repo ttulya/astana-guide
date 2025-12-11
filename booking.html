@@ -82,6 +82,7 @@ label{font-size:0.9em;color:#444}
 
 ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
 
+/* Блок тарифов */
 .price-box{
   background:#f5f8ff;
   border-radius:10px;
@@ -95,8 +96,99 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
   color:#0072ff;
   margin-bottom:6px;
 }
-.price-item{margin:3px 0;}
-.price-item span{font-weight:600;}
+
+/* Карточки тарифов */
+.tariff-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:12px;
+  margin-top:10px;
+}
+.tariff-card{
+  position:relative;
+  border-radius:10px;
+  padding:12px 14px;
+  font-size:0.9em;
+  color:#fff;
+  overflow:hidden;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  cursor:pointer;
+  transition:.2s;
+}
+.tariff-card:hover{
+  transform:translateY(-2px) scale(1.01);
+  box-shadow:0 6px 14px rgba(0,0,0,0.12);
+}
+.tariff-name{
+  font-weight:600;
+  margin-bottom:4px;
+  font-size:0.95em;
+}
+.tariff-time{
+  font-size:0.85em;
+  opacity:0.95;
+  margin-bottom:6px;
+}
+.tariff-price{
+  font-size:0.95em;
+  margin-bottom:2px;
+}
+.tariff-price span{
+  font-weight:600;
+}
+.tariff-kzt{
+  font-size:0.85em;
+  opacity:0.95;
+  margin-bottom:4px;
+}
+
+/* иконка+описание */
+.tariff-icon{
+  font-size:1.3em;
+  margin-bottom:4px;
+}
+.tariff-desc{
+  font-size:0.8em;
+  opacity:0.95;
+}
+
+/* Цвета карточек */
+.tariff-basic{
+  background:linear-gradient(135deg,#4fc3f7,#0288d1);
+}
+.tariff-standard{
+  background:linear-gradient(135deg,#ffb74d,#f57c00);
+}
+.tariff-comfort{
+  background:linear-gradient(135deg,#ba68c8,#8e24aa);
+}
+.tariff-night{
+  background:linear-gradient(135deg,#455a64,#1c313a);
+}
+
+/* Стикеры / бейджи */
+.tariff-badge{
+  position:absolute;
+  top:8px;
+  right:-10px;
+  background:rgba(0,0,0,0.15);
+  padding:3px 14px;
+  font-size:0.75em;
+  font-weight:600;
+  transform:skewX(-12deg);
+  text-transform:uppercase;
+}
+.tariff-badge span{
+  display:inline-block;
+  transform:skewX(12deg);
+}
+
+/* Маленькая подпись под курсом */
+.rate-note{
+  font-size:0.8em;
+  color:#666;
+  margin-top:2px;
+}
 </style>
 </head>
 
@@ -126,28 +218,80 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
   <div class="price-box">
     <div class="price-title">Тарифы и пакеты</div>
 
-    <p style="margin-bottom:6px;color:#555;">
+    <p style="margin-bottom:4px;color:#555;">
       💱 Текущий курс: <b id="rateText">загрузка...</b>
     </p>
+    <p class="rate-note">* Пересчёт в тенге происходит автоматически.</p>
 
-    <p class="price-item">
-      <span>Базовый:</span> 1 час — 6 USD
-      (<span id="p1">-</span> ₸)
-    </p>
-    <p class="price-item">
-      <span>Стандарт:</span> 2 часа — 10 USD
-      (<span id="p2">-</span> ₸) — рекомендуем
-    </p>
-    <p class="price-item">
-      <span>Комфорт:</span> 3 часа — 13 USD
-      (<span id="p3">-</span> ₸)
-    </p>
-    <p class="price-item">
-      <span>Ночной пакет:</span> 8 часов — 24 USD
-      (<span id="p4">-</span> ₸) 🌙
-    </p>
+    <div class="tariff-grid">
+      <!-- 1 час -->
+      <div class="tariff-card tariff-basic" onclick="openBooking(1)">
+        <div class="tariff-badge"><span>Старт</span></div>
+        <div class="tariff-icon">⏱️</div>
+        <div class="tariff-name">Базовый</div>
+        <div class="tariff-time">1 час отдыха</div>
+        <div class="tariff-price">
+          <span>6 USD</span>
+        </div>
+        <div class="tariff-kzt">
+          ≈ <span id="p1">-</span> ₸
+        </div>
+        <div class="tariff-desc">
+          Для быстрого восстановления между делами или перед коротким рейсом.
+        </div>
+      </div>
 
-    <p style="margin-top:6px;">* Все цены автоматически пересчитываются в тенге по текущему курсу.</p>
+      <!-- 2 часа -->
+      <div class="tariff-card tariff-standard" onclick="openBooking(2)">
+        <div class="tariff-badge"><span>Хит</span></div>
+        <div class="tariff-icon">✈️</div>
+        <div class="tariff-name">Стандарт</div>
+        <div class="tariff-time">2 часа — оптимально для пересадки</div>
+        <div class="tariff-price">
+          <span>10 USD</span>
+        </div>
+        <div class="tariff-kzt">
+          ≈ <span id="p2">-</span> ₸
+        </div>
+        <div class="tariff-desc">
+          Идеален, если у вас стыковка или задержка рейса на пару часов.
+        </div>
+      </div>
+
+      <!-- 3 часа -->
+      <div class="tariff-card tariff-comfort" onclick="openBooking(3)">
+        <div class="tariff-badge"><span>Лучший выбор</span></div>
+        <div class="tariff-icon">🛏️</div>
+        <div class="tariff-name">Комфорт</div>
+        <div class="tariff-time">3 часа — для длинных ожиданий</div>
+        <div class="tariff-price">
+          <span>13 USD</span>
+        </div>
+        <div class="tariff-kzt">
+          ≈ <span id="p3">-</span> ₸
+        </div>
+        <div class="tariff-desc">
+          Можно нормально прилечь, поспать, зарядить телефон и спокойно дождаться посадки.
+        </div>
+      </div>
+
+      <!-- Ночной пакет -->
+      <div class="tariff-card tariff-night" onclick="openBooking(8)">
+        <div class="tariff-badge"><span>Ночной</span></div>
+        <div class="tariff-icon">🌙</div>
+        <div class="tariff-name">Ночной пакет</div>
+        <div class="tariff-time">8 часов — ночной отдых</div>
+        <div class="tariff-price">
+          <span>24 USD</span>
+        </div>
+        <div class="tariff-kzt">
+          ≈ <span id="p4">-</span> ₸
+        </div>
+        <div class="tariff-desc">
+          Для ночных рейсов и транзита: вместо жёстких кресел — своя капсула на всю ночь.
+        </div>
+      </div>
+    </div>
   </div>
 
   <p>Введите данные, чтобы забронировать посещение.</p>
@@ -187,12 +331,27 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
 <script>
 let user = JSON.parse(localStorage.getItem("user") || "null");
 
-function openBooking(){
+// 🔹 теперь openBooking может принимать duration (часы)
+function openBooking(duration){
   if(user){
     const fullName = ((user.firstName || "") + " " + (user.lastName || "")).trim();
     clientName.value = fullName || "";
     clientPhone.value = user.phone || "";
+  } else {
+    clientName.value = "";
+    clientPhone.value = "";
   }
+
+  // если пришла продолжительность — подставляем в поле
+  if(duration){
+    bookingHours.value = duration;
+  } else {
+    // если зашли через кнопку "Забронировать" — не трогаем старое значение
+    if(!bookingHours.value){
+      bookingHours.value = "";
+    }
+  }
+
   bookingPopup.style.display = 'flex';
 }
 
@@ -249,7 +408,7 @@ let usdToKzt = 480;
 const T1 = 6;   // 1 час
 const T2 = 10;  // 2 часа
 const T3 = 13;  // 3 часа
-const T4 = 24;  // ночной 8 часов
+const T4 = 24;  // 8 часов
 
 function updatePrices(){
   const rateTextEl = document.getElementById("rateText");
