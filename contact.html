@@ -35,7 +35,7 @@ header{
   padding-top:80px;transition:.3s;z-index:2600;
 }
 
-/* Меню открыто */
+/* Меню открывается только при нажатии */
 #menuToggle:checked + header + .side-menu{
   left:0;
 }
@@ -89,8 +89,8 @@ h2{color:#0072ff;margin-bottom:15px}
 
 <body>
 
-<!-- Меню открыто -->
-<input type="checkbox" id="menuToggle" checked />
+<!-- Меню закрыто -->
+<input type="checkbox" id="menuToggle" />
 
 <header>
   <label for="menuToggle" class="burger">
@@ -113,7 +113,6 @@ h2{color:#0072ff;margin-bottom:15px}
 <p>Email: <b>info@relaxcaps.kz</b></p>
 <p>Телефон: <b>+7 700 000 00 00</b></p>
 
-<!-- QR-блок Instagram -->
 <div class="qr-box">
   <h3 style="color:#0072ff;margin-bottom:10px;font-size:1.1em;">Наш Instagram</h3>
 
@@ -132,7 +131,6 @@ h2{color:#0072ff;margin-bottom:15px}
 
 </section>
 
-<!-- 📌 Авто-закрытие бургер-меню -->
 <script>
 document.querySelectorAll(".side-menu a").forEach(link => {
   link.addEventListener("click", () => {

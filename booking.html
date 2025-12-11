@@ -109,7 +109,8 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
 
 <body>
 
-<input type="checkbox" id="menuToggle" checked />
+<!-- Бургер-меню ЗАКРЫТО по умолчанию -->
+<input type="checkbox" id="menuToggle" />
 
 <header>
   <label for="menuToggle" class="burger">
@@ -224,7 +225,14 @@ function confirmBooking(){
   }
 
   alert("Бронь создана! Ваш ID: " + id);
+
+  // Закрываем окно и очищаем поля
   bookingPopup.style.display = 'none';
+  clientName.value   = "";
+  clientPhone.value  = "";
+  bookingDate.value  = "";
+  bookingTime.value  = "";
+  bookingHours.value = "";
 }
 </script>
 
@@ -252,7 +260,7 @@ async function loadRate(){
 loadRate();
 </script>
 
-<!-- Авто-закрытие бургер-меню -->
+<!-- Авто-закрытие бургер-меню при переходе по ссылкам -->
 <script>
   document.querySelectorAll(".side-menu a").forEach(link => {
     link.addEventListener("click", () => {

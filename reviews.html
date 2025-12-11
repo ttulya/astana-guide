@@ -37,7 +37,7 @@ header{
   padding-top:80px;transition:.3s;z-index:2600;
 }
 
-/* Меню открыто при загрузке */
+/* Меню открывается, когда checkbox включён */
 #menuToggle:checked + header + .side-menu{
   left:0;
 }
@@ -144,8 +144,8 @@ select{
 
 <body>
 
-<!-- Меню открыто по умолчанию -->
-<input type="checkbox" id="menuToggle" checked />
+<!-- Меню закрыто по умолчанию -->
+<input type="checkbox" id="menuToggle" />
 
 <header>
   <label for="menuToggle" class="burger">
