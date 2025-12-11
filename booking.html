@@ -20,7 +20,6 @@ header{
   width:32px;height:22px;margin-right:15px;cursor:pointer;
   display:flex;flex-direction:column;justify-content:space-between;
 }
-
 .burger div{height:4px;background:white;border-radius:2px}
 
 #menuToggle{display:none}
@@ -40,7 +39,6 @@ header{
   text-decoration:none;font-weight:600;
   border-bottom:1px solid rgba(255,255,255,0.15);
 }
-
 .side-menu a:hover{color:#ffd700}
 
 section{
@@ -56,7 +54,6 @@ h2{color:#0072ff;margin-bottom:15px}
   padding:10px 18px;border-radius:6px;
   text-decoration:none;margin-top:10px;cursor:pointer;border:none;
 }
-
 .btn:hover{background:#005ec4}
 
 .overlay{
@@ -98,12 +95,8 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
   color:#0072ff;
   margin-bottom:6px;
 }
-.price-item{
-  margin:3px 0;
-}
-.price-item span{
-  font-weight:600;
-}
+.price-item{margin:3px 0;}
+.price-item span{font-weight:600;}
 </style>
 </head>
 
@@ -137,9 +130,22 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
       💱 Текущий курс: <b id="rateText">загрузка...</b>
     </p>
 
-    <p class="price-item"><span>Базовый:</span> 1 час — 5 USD (<span id="p1">-</span> ₸)</p>
-    <p class="price-item"><span>Стандарт:</span> 2 часа — 8 USD (<span id="p2">-</span> ₸)</p>
-    <p class="price-item"><span>АКЦИЯ:</span> 3 часа — 10 USD (<span id="p3">-</span> ₸) 🎉</p>
+    <p class="price-item">
+      <span>Базовый:</span> 1 час — 6 USD
+      (<span id="p1">-</span> ₸)
+    </p>
+    <p class="price-item">
+      <span>Стандарт:</span> 2 часа — 10 USD
+      (<span id="p2">-</span> ₸) — рекомендуем
+    </p>
+    <p class="price-item">
+      <span>Комфорт:</span> 3 часа — 13 USD
+      (<span id="p3">-</span> ₸)
+    </p>
+    <p class="price-item">
+      <span>Ночной пакет:</span> 8 часов — 24 USD
+      (<span id="p4">-</span> ₸) 🌙
+    </p>
 
     <p style="margin-top:6px;">* Все цены автоматически пересчитываются в тенге по текущему курсу.</p>
   </div>
@@ -226,7 +232,6 @@ function confirmBooking(){
 
   alert("Бронь создана! Ваш ID: " + id);
 
-  // Закрываем окно и очищаем поля
   bookingPopup.style.display = 'none';
   clientName.value   = "";
   clientPhone.value  = "";
@@ -237,22 +242,40 @@ function confirmBooking(){
 </script>
 
 <script>
+// базовый курс (если API не ответит)
 let usdToKzt = 480;
 
+// цены в долларах
+const T1 = 6;   // 1 час
+const T2 = 10;  // 2 часа
+const T3 = 13;  // 3 часа
+const T4 = 24;  // ночной 8 часов
+
 function updatePrices(){
-  rateText.innerText = `1 USD = ${usdToKzt.toFixed(2)} ₸`;
-  p1.innerText = Math.round(5 * usdToKzt);
-  p2.innerText = Math.round(8 * usdToKzt);
-  p3.innerText = Math.round(10 * usdToKzt);
+  const rateTextEl = document.getElementById("rateText");
+  const p1El = document.getElementById("p1");
+  const p2El = document.getElementById("p2");
+  const p3El = document.getElementById("p3");
+  const p4El = document.getElementById("p4");
+
+  if(rateTextEl){
+    rateTextEl.innerText = `1 USD = ${usdToKzt.toFixed(2)} ₸`;
+  }
+  if(p1El) p1El.innerText = Math.round(T1 * usdToKzt);
+  if(p2El) p2El.innerText = Math.round(T2 * usdToKzt);
+  if(p3El) p3El.innerText = Math.round(T3 * usdToKzt);
+  if(p4El) p4El.innerText = Math.round(T4 * usdToKzt);
 }
 
 async function loadRate(){
   try{
     const res = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=KZT");
     const data = await res.json();
-    if(data?.rates?.KZT) usdToKzt = data.rates.KZT;
+    if(data && data.rates && data.rates.KZT){
+      usdToKzt = data.rates.KZT;
+    }
   }catch{
-    console.warn("Не удалось получить курс USD → KZT");
+    console.warn("Не удалось получить курс USD → KZT, используем запасной.");
   }
   updatePrices();
 }
@@ -262,12 +285,12 @@ loadRate();
 
 <!-- Авто-закрытие бургер-меню при переходе по ссылкам -->
 <script>
-  document.querySelectorAll(".side-menu a").forEach(link => {
-    link.addEventListener("click", () => {
-      const toggle = document.getElementById("menuToggle");
-      if (toggle) toggle.checked = false;
-    });
+document.querySelectorAll(".side-menu a").forEach(link => {
+  link.addEventListener("click", () => {
+    const toggle = document.getElementById("menuToggle");
+    if (toggle) toggle.checked = false;
   });
+});
 </script>
 
 </body>
