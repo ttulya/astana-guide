@@ -35,7 +35,7 @@ header{
   padding-top:80px;transition:.3s;z-index:2600;
 }
 
-/* Меню открыто по умолчанию */
+/* Меню открыто */
 #menuToggle:checked + header + .side-menu{
   left:0;
 }
@@ -122,7 +122,7 @@ h2{color:#0072ff;margin-bottom:15px}
 
   <p style="margin-bottom:12px;color:#444;">
     Сканируйте QR-код, чтобы перейти на страницу RelaxCaps
-    или же намите на кнопку ниже.
+    или нажмите кнопку ниже.
   </p>
 
   <a href="https://www.instagram.com/relaxcaps.kz" target="_blank" class="btn">
@@ -131,6 +131,16 @@ h2{color:#0072ff;margin-bottom:15px}
 </div>
 
 </section>
+
+<!-- 📌 Авто-закрытие бургер-меню -->
+<script>
+document.querySelectorAll(".side-menu a").forEach(link => {
+  link.addEventListener("click", () => {
+    const toggle = document.getElementById("menuToggle");
+    if(toggle) toggle.checked = false;
+  });
+});
+</script>
 
 </body>
 </html>

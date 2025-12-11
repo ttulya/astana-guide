@@ -108,7 +108,7 @@ function register(){
     phone,
     login,
     pass,
-    bookings: [] // можно не использовать, но пусть будет
+    bookings: []
   };
 
   localStorage.setItem("user", JSON.stringify(newUser));
@@ -142,7 +142,6 @@ function renderProfile(){
     <p><b>Логин:</b> ${user.login || "-"}</p>
   `;
 
-  // Берём все бронирования и фильтруем по телефону пользователя
   const allBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
   const bookings = allBookings.filter(b => b.phone === user.phone);
 
@@ -184,7 +183,16 @@ if(user) renderProfile();
 const firstNameInput = document.getElementById("firstName");
 const lastNameInput  = document.getElementById("lastName");
 const phoneInput     = document.getElementById("phone");
+</script>
 
+<!-- Авто-закрытие бургер-меню -->
+<script>
+document.querySelectorAll(".side-menu a").forEach(link => {
+  link.addEventListener("click", () => {
+    const toggle = document.getElementById("menuToggle");
+    if (toggle) toggle.checked = false;
+  });
+});
 </script>
 
 </body>

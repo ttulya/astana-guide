@@ -249,7 +249,6 @@ function addReview(){
     return;
   }
 
-  // Имя пользователя, если он авторизован
   let name = "Гость";
   if(currentUser){
     const fn = currentUser.firstName || "";
@@ -257,7 +256,6 @@ function addReview(){
     name = (fn + " " + ln).trim() || "Пользователь";
   }
 
-  // Текущая дата в формате YYYY-MM-DD
   const today = new Date();
   const dateStr = today.toISOString().slice(0,10);
 
@@ -286,6 +284,16 @@ function resetFilter(){
 }
 
 loadReviews();
+</script>
+
+<!-- Автоматическое закрытие бургер-меню при переходе по ссылке -->
+<script>
+  document.querySelectorAll(".side-menu a").forEach(link => {
+    link.addEventListener("click", () => {
+      const toggle = document.getElementById("menuToggle");
+      if (toggle) toggle.checked = false;
+    });
+  });
 </script>
 
 </body>

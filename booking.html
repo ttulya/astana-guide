@@ -31,7 +31,6 @@ header{
   padding-top:80px;transition:.3s;z-index:2600;
 }
 
-/* Меню открыто при checked */
 #menuToggle:checked + header + .side-menu{
   left:0;
 }
@@ -86,7 +85,6 @@ label{font-size:0.9em;color:#444}
 
 ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
 
-/* Блок с ценами и пакетами */
 .price-box{
   background:#f5f8ff;
   border-radius:10px;
@@ -111,7 +109,6 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
 
 <body>
 
-<!-- Меню открыто по умолчанию -->
 <input type="checkbox" id="menuToggle" checked />
 
 <header>
@@ -132,7 +129,6 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
 <section>
   <h2>Бронирование</h2>
 
-  <!-- ========== БЛОК ТАРИФОВ + АВТО-КУРС USD→KZT ========== -->
   <div class="price-box">
     <div class="price-title">Тарифы и пакеты</div>
 
@@ -140,27 +136,21 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
       💱 Текущий курс: <b id="rateText">загрузка...</b>
     </p>
 
-    <p class="price-item">
-      <span>Базовый:</span> 1 час — 5 USD (<span id="p1">-</span> ₸)
-    </p>
-    <p class="price-item">
-      <span>Стандарт:</span> 2 часа — 8 USD (<span id="p2">-</span> ₸)
-    </p>
-    <p class="price-item">
-      <span>АКЦИЯ:</span> 3 часа — 10 USD (<span id="p3">-</span> ₸) 🎉
-    </p>
+    <p class="price-item"><span>Базовый:</span> 1 час — 5 USD (<span id="p1">-</span> ₸)</p>
+    <p class="price-item"><span>Стандарт:</span> 2 часа — 8 USD (<span id="p2">-</span> ₸)</p>
+    <p class="price-item"><span>АКЦИЯ:</span> 3 часа — 10 USD (<span id="p3">-</span> ₸) 🎉</p>
 
     <p style="margin-top:6px;">* Все цены автоматически пересчитываются в тенге по текущему курсу.</p>
   </div>
-  <!-- ======================================================== -->
 
-  <p>Введите данные, чтобы забронировать посещение. После подтверждения вы получите уникальный ID бронирования, а администратор сможет связаться с вами.</p>
+  <p>Введите данные, чтобы забронировать посещение.</p>
   <button class="btn" onclick="openBooking()">Забронировать</button>
 </section>
 
 <div id="bookingPopup" class="overlay" onclick="if(event.target===this)this.style.display='none'">
   <div class="popup">
     <div class="closeBtn" onclick="bookingPopup.style.display='none'">&times;</div>
+    
     <h2 style="margin-bottom:8px;">Условия бронирования</h2>
     <ul>
       <li>🚫 Курение запрещено</li>
@@ -188,7 +178,6 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
 </div>
 
 <script>
-// Текущий пользователь (если залогинен)
 let user = JSON.parse(localStorage.getItem("user") || "null");
 
 function openBooking(){
@@ -214,7 +203,6 @@ function confirmBooking(){
 
   const id = "ID" + Math.floor(100000 + Math.random()*900000);
 
-  // 👇 ДОБАВЛЕН СТАТУС НОВОЙ ЗАЯВКИ
   const booking = {
     id,
     name,
@@ -222,7 +210,7 @@ function confirmBooking(){
     date,
     time,
     duration: hours,
-    status: "new" // новая заявка по умолчанию
+    status: "new"
   };
 
   let allBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
@@ -235,48 +223,44 @@ function confirmBooking(){
     localStorage.setItem("user", JSON.stringify(user));
   }
 
-  alert(
-    "Бронь создана!\n" +
-    "Ваш ID: " + id + "\n\n" +
-    "Администратор свяжется с вами по номеру: " + phone
-  );
-
+  alert("Бронь создана! Ваш ID: " + id);
   bookingPopup.style.display = 'none';
-  clientName.value = "";
-  clientPhone.value = "";
-  bookingDate.value = "";
-  bookingTime.value = "";
-  bookingHours.value = "";
 }
 </script>
 
-<!-- ========== АВТО-ПОЛУЧЕНИЕ КУРСА USD→KZT И ПЕРЕСЧЁТ ЦЕН ========== -->
 <script>
-let usdToKzt = 480; // запасной курс
+let usdToKzt = 480;
 
 function updatePrices(){
-  document.getElementById("rateText").innerText = `1 USD = ${usdToKzt.toFixed(2)} ₸`;
-  document.getElementById("p1").innerText = Math.round(5 * usdToKzt);
-  document.getElementById("p2").innerText = Math.round(8 * usdToKzt);
-  document.getElementById("p3").innerText = Math.round(10 * usdToKzt);
+  rateText.innerText = `1 USD = ${usdToKzt.toFixed(2)} ₸`;
+  p1.innerText = Math.round(5 * usdToKzt);
+  p2.innerText = Math.round(8 * usdToKzt);
+  p3.innerText = Math.round(10 * usdToKzt);
 }
 
 async function loadRate(){
   try{
     const res = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=KZT");
     const data = await res.json();
-    if(data && data.rates && data.rates.KZT){
-      usdToKzt = data.rates.KZT;
-    }
+    if(data?.rates?.KZT) usdToKzt = data.rates.KZT;
   }catch{
-    console.warn("Курс не загрузился, используется запасной");
+    console.warn("Не удалось получить курс USD → KZT");
   }
   updatePrices();
 }
 
 loadRate();
 </script>
-<!-- =============================================================== -->
+
+<!-- Авто-закрытие бургер-меню -->
+<script>
+  document.querySelectorAll(".side-menu a").forEach(link => {
+    link.addEventListener("click", () => {
+      const toggle = document.getElementById("menuToggle");
+      if (toggle) toggle.checked = false;
+    });
+  });
+</script>
 
 </body>
 </html>
