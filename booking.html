@@ -190,6 +190,8 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
   margin-top:2px;
 }
 </style>
+<link rel="stylesheet" href="app.css">
+<script src="app.js" defer></script>
 </head>
 
 <body>
@@ -221,7 +223,7 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
     <p style="margin-bottom:4px;color:#555;">
       💱 Текущий курс: <b id="rateText">загрузка...</b>
     </p>
-    <p class="rate-note">* Пересчёт в тенге происходит автоматически.</p>
+    <p class="rate-note" id="rateNote">Ориентировочный расчёт стоимости.</p>
 
     <div class="tariff-grid">
       <!-- 1 час -->
@@ -299,8 +301,8 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
 </section>
 
 <div id="bookingPopup" class="overlay" onclick="if(event.target===this)this.style.display='none'">
-  <div class="popup">
-    <div class="closeBtn" onclick="bookingPopup.style.display='none'">&times;</div>
+  <div class="popup" role="dialog" aria-modal="true" aria-label="Бронирование">
+    <button type="button" class="closeBtn" aria-label="Закрыть" style="border:0;background:none" onclick="document.getElementById('bookingPopup').style.display='none'">&times;</button>
     
     <h2 style="margin-bottom:8px;">Условия бронирования</h2>
     <ul>
@@ -310,10 +312,10 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
     </ul>
 
     <label for="clientName">Ваше имя и фамилия</label>
-    <input id="clientName" placeholder="Например: Аяжан Тлеуберген">
+    <input id="clientName" placeholder="Например: Аяжан Тлеуберген" maxlength="101" autocomplete="name">
 
     <label for="clientPhone">Телефон для связи</label>
-    <input id="clientPhone" placeholder="+7 7xx xxx xx xx">
+    <input id="clientPhone" type="tel" placeholder="+7 7xx xxx xx xx" maxlength="30" autocomplete="tel">
 
     <label for="bookingDate">Дата</label>
     <input id="bookingDate" type="date">
@@ -324,133 +326,16 @@ ul{margin:10px 0 6px;padding-left:20px;text-align:left;font-size:0.9em}
     <label for="bookingHours">Продолжительность (часы)</label>
     <input id="bookingHours" type="number" min="1" max="24" placeholder="Например: 2">
 
-    <button class="btn" onclick="confirmBooking()">Подтвердить</button>
+    <div id="bookingMessage" class="app-message error" role="alert"></div><button class="btn" onclick="confirmBooking()">Подтвердить</button>
   </div>
 </div>
 
-<script>
-let user = JSON.parse(localStorage.getItem("user") || "null");
 
-// 🔹 теперь openBooking может принимать duration (часы)
-function openBooking(duration){
-  if(user){
-    const fullName = ((user.firstName || "") + " " + (user.lastName || "")).trim();
-    clientName.value = fullName || "";
-    clientPhone.value = user.phone || "";
-  } else {
-    clientName.value = "";
-    clientPhone.value = "";
-  }
 
-  // если пришла продолжительность — подставляем в поле
-  if(duration){
-    bookingHours.value = duration;
-  } else {
-    // если зашли через кнопку "Забронировать" — не трогаем старое значение
-    if(!bookingHours.value){
-      bookingHours.value = "";
-    }
-  }
 
-  bookingPopup.style.display = 'flex';
-}
-
-function confirmBooking(){
-  const name   = clientName.value.trim();
-  const phone  = clientPhone.value.trim();
-  const date   = bookingDate.value;
-  const time   = bookingTime.value;
-  const hours  = bookingHours.value.trim();
-
-  if(!name || !phone || !date || !time || !hours){
-    alert("Пожалуйста, заполните все поля.");
-    return;
-  }
-
-  const id = "ID" + Math.floor(100000 + Math.random()*900000);
-
-  const booking = {
-    id,
-    name,
-    phone,
-    date,
-    time,
-    duration: hours,
-    status: "new"
-  };
-
-  let allBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-  allBookings.push(booking);
-  localStorage.setItem("bookings", JSON.stringify(allBookings));
-
-  if(user){
-    user.bookings = user.bookings || [];
-    user.bookings.push(booking);
-    localStorage.setItem("user", JSON.stringify(user));
-  }
-
-  alert("Бронь создана! Ваш ID: " + id);
-
-  bookingPopup.style.display = 'none';
-  clientName.value   = "";
-  clientPhone.value  = "";
-  bookingDate.value  = "";
-  bookingTime.value  = "";
-  bookingHours.value = "";
-}
-</script>
-
-<script>
-// базовый курс (если API не ответит)
-let usdToKzt = 480;
-
-// цены в долларах
-const T1 = 6;   // 1 час
-const T2 = 10;  // 2 часа
-const T3 = 13;  // 3 часа
-const T4 = 24;  // 8 часов
-
-function updatePrices(){
-  const rateTextEl = document.getElementById("rateText");
-  const p1El = document.getElementById("p1");
-  const p2El = document.getElementById("p2");
-  const p3El = document.getElementById("p3");
-  const p4El = document.getElementById("p4");
-
-  if(rateTextEl){
-    rateTextEl.innerText = `1 USD = ${usdToKzt.toFixed(2)} ₸`;
-  }
-  if(p1El) p1El.innerText = Math.round(T1 * usdToKzt);
-  if(p2El) p2El.innerText = Math.round(T2 * usdToKzt);
-  if(p3El) p3El.innerText = Math.round(T3 * usdToKzt);
-  if(p4El) p4El.innerText = Math.round(T4 * usdToKzt);
-}
-
-async function loadRate(){
-  try{
-    const res = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=KZT");
-    const data = await res.json();
-    if(data && data.rates && data.rates.KZT){
-      usdToKzt = data.rates.KZT;
-    }
-  }catch{
-    console.warn("Не удалось получить курс USD → KZT, используем запасной.");
-  }
-  updatePrices();
-}
-
-loadRate();
-</script>
 
 <!-- Авто-закрытие бургер-меню при переходе по ссылкам -->
-<script>
-document.querySelectorAll(".side-menu a").forEach(link => {
-  link.addEventListener("click", () => {
-    const toggle = document.getElementById("menuToggle");
-    if (toggle) toggle.checked = false;
-  });
-});
-</script>
+
 
 </body>
 </html>

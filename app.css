@@ -1,0 +1,21 @@
+[hidden]{display:none!important}
+.app-message{padding:12px 15px;border-radius:8px;margin:12px 0;background:#eaf2ff;color:#144572;line-height:1.5}
+.app-message.error{background:#fff0ef;color:#9f2222}
+.app-message.success{background:#e8f6ed;color:#176330}
+.app-message:empty{display:none}
+.btn:disabled{opacity:.6;cursor:wait}
+.field-label{display:block;margin-top:10px;font-size:.9em;color:#444}
+.profile-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.profile-edit{padding:15px;border:1px solid #dde5ff;border-radius:8px;margin:12px 0}
+.profile-edit input{font-family:inherit}
+.status-badge.status-processed{background:#ad5700}
+.booking-item{line-height:1.7;padding:12px!important}
+.booking-item .btn{font-size:.85em;background:#b22f36}
+.table-wrap{overflow-x:auto}
+.import-panel{margin-top:22px;padding:14px;border:1px solid #dde5ff;border-radius:8px;line-height:1.6}
+.import-panel input{border:0}
+.file-notice{position:relative;margin:20px;background:white;padding:20px;border-radius:12px;line-height:1.7;box-shadow:0 4px 12px #0001}
+section{width:calc(100% - 24px)}
+input:focus,textarea:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid #0072ff;outline-offset:2px}
+.popup{max-height:90vh;overflow-y:auto}
+@media(max-width:600px){section{padding:18px}body:has(h1){padding:12px}th,td{white-space:nowrap}.profile-actions .btn{flex:1;text-align:center}}

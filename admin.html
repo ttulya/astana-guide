@@ -102,19 +102,23 @@ tr:nth-child(even){
   border:1px solid #ccc;
 }
 </style>
+<link rel="stylesheet" href="app.css">
+<script src="app.js" defer></script>
 </head>
 
 <body>
 
 <h1>Админ-панель бронирований</h1>
-<p class="info">Эта страница доступна только сотрудникам по прямой ссылке.</p>
+<p class="info">Изменение статусов доступно администратору после входа в аккаунт.</p>
+<p><a class="btn" href="profile.html">Личный кабинет</a></p>
+<div id="adminContent" hidden>
 <p class="info">Всего бронирований: <b id="count">0</b></p>
 
-<button class="btn" onclick="clearBookings()">Очистить все бронирования</button>
+<button class="btn" onclick="refreshAdmin()">Обновить список</button>
 
 <div id="noData" style="display:none;">Нет ни одной брони.</div>
 
-<table id="table" style="display:none;">
+<div class="table-wrap"><table id="table" style="display:none;">
   <thead>
     <tr>
       <th>ID</th>
@@ -128,84 +132,9 @@ tr:nth-child(even){
     </tr>
   </thead>
   <tbody id="tbody"></tbody>
-</table>
+</table></div></div>
 
-<script>
-const STATUS_LABELS = {
-  new: "Новая",
-  processed: "Обработана",
-  done: "Сеанс завершён",
-  cancelled: "Отменена"
-};
 
-function getStatusLabel(value){
-  return STATUS_LABELS[value] || "Новая";
-}
-
-function load(){
-  const bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-  const countEl  = document.getElementById("count");
-  const noData   = document.getElementById("noData");
-  const table    = document.getElementById("table");
-  const tbody    = document.getElementById("tbody");
-
-  countEl.textContent = bookings.length;
-
-  if(bookings.length === 0){
-    noData.style.display = "block";
-    table.style.display = "none";
-    tbody.innerHTML = "";
-    return;
-  }
-
-  noData.style.display = "none";
-  table.style.display = "table";
-
-  tbody.innerHTML = bookings
-    .map((b, index) => {
-      const statusValue = b.status || "new";
-      const label = getStatusLabel(statusValue);
-      return `
-      <tr>
-        <td>${b.id || "-"}</td>
-        <td>${b.name || "-"}</td>
-        <td>${b.phone || "-"}</td>
-        <td>${b.date || "-"}</td>
-        <td>${b.time || "-"}</td>
-        <td>${b.duration || "-"}</td>
-        <td>
-          <span class="status-badge status-${statusValue}">${label}</span>
-        </td>
-        <td>
-          <select class="status-select" onchange="changeStatus(${index}, this.value)">
-            <option value="new" ${statusValue==="new"?"selected":""}>Новая</option>
-            <option value="processed" ${statusValue==="processed"?"selected":""}>Обработана</option>
-            <option value="done" ${statusValue==="done"?"selected":""}>Сеанс завершён</option>
-            <option value="cancelled" ${statusValue==="cancelled"?"selected":""}>Отменена</option>
-          </select>
-        </td>
-      </tr>
-      `;
-    })
-    .join("");
-}
-
-function changeStatus(index, newStatus){
-  let bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-  if(!bookings[index]) return;
-  bookings[index].status = newStatus;
-  localStorage.setItem("bookings", JSON.stringify(bookings));
-  load(); // перерисовать с обновлённым статусом
-}
-
-function clearBookings(){
-  if(!confirm("Удалить все бронирования? Это действие нельзя отменить.")) return;
-  localStorage.removeItem("bookings");
-  load();
-}
-
-load();
-</script>
 
 </body>
 </html>

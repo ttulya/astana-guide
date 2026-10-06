@@ -1,0 +1,9 @@
+{
+  "name": "relaxcaps",
+  "version": "1.0.0",
+  "private": true,
+  "description": "RelaxCaps website with Microsoft SQL Server persistence",
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node server.js", "test": "node --test tests/*.test.js" },
+  "dependencies": { "bcryptjs": "3.0.3" }
+}

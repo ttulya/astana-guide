@@ -140,6 +140,8 @@ select{
   margin-right:8px;
 }
 </style>
+<link rel="stylesheet" href="app.css">
+<script src="app.js" defer></script>
 </head>
 
 <body>
@@ -180,11 +182,11 @@ select{
 
   <h3>Оставить отзыв</h3>
   <p style="font-size:0.9em;color:#555;margin-bottom:6px;">
-    Отзыв будет сохранён вместе с вашим именем (если вы авторизованы) и текущей датой.
+    Отзыв будет сохранён вместе с именем из вашего профиля и текущей датой.
   </p>
-  <textarea id="reviewText" placeholder="Ваш отзыв"></textarea>
+  <label class="field-label" for="reviewText">Текст отзыва</label><textarea id="reviewText" maxlength="2000" placeholder="Ваш отзыв"></textarea>
   <div style="margin-bottom:6px;">
-    <select id="reviewScore">
+    <label for="reviewScore">Оценка</label><select id="reviewScore">
       <option value="5">⭐⭐⭐⭐⭐ (5)</option>
       <option value="4">⭐⭐⭐⭐ (4)</option>
       <option value="3">⭐⭐⭐ (3)</option>
@@ -195,106 +197,10 @@ select{
   </div>
 </section>
 
-<script>
-let allReviews = [];
-let fromFilter = "";
-let toFilter = "";
 
-// Загружаем текущего пользователя (если есть)
-let currentUser = JSON.parse(localStorage.getItem("user") || "null");
-
-function loadReviews(){
-  allReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
-
-  // Сортировка: новые сверху
-  allReviews.sort((a,b) => (b.date || "").localeCompare(a.date || ""));
-
-  renderReviews();
-}
-
-function renderReviews(){
-  const list = document.getElementById("reviewsList");
-  let filtered = allReviews;
-
-  if(fromFilter){
-    filtered = filtered.filter(r => r.date >= fromFilter);
-  }
-  if(toFilter){
-    filtered = filtered.filter(r => r.date <= toFilter);
-  }
-
-  if(!filtered.length){
-    list.innerHTML = "<p style='color:#777;font-style:italic;'>Пока нет отзывов за выбранный период.</p>";
-    return;
-  }
-
-  list.innerHTML = filtered.map(r => `
-    <div class="review-item">
-      <div class="review-header">
-        <span class="review-name">${r.name || "Гость"}</span>
-        <span class="review-date">${r.date || ""}</span>
-      </div>
-      <div class="review-stars">${"⭐".repeat(Number(r.score) || 0)}</div>
-      <div>${r.text}</div>
-    </div>
-  `).join("");
-}
-
-function addReview(){
-  const text = document.getElementById("reviewText").value.trim();
-  const score = Number(document.getElementById("reviewScore").value);
-
-  if(!text){
-    alert("Введите отзыв!");
-    return;
-  }
-
-  let name = "Гость";
-  if(currentUser){
-    const fn = currentUser.firstName || "";
-    const ln = currentUser.lastName || "";
-    name = (fn + " " + ln).trim() || "Пользователь";
-  }
-
-  const today = new Date();
-  const dateStr = today.toISOString().slice(0,10);
-
-  const newReview = { text, score, name, date: dateStr };
-
-  let arr = JSON.parse(localStorage.getItem("reviews") || "[]");
-  arr.push(newReview);
-  localStorage.setItem("reviews", JSON.stringify(arr));
-
-  document.getElementById("reviewText").value = "";
-  loadReviews();
-}
-
-function applyFilter(){
-  fromFilter = document.getElementById("fromDate").value || "";
-  toFilter   = document.getElementById("toDate").value || "";
-  renderReviews();
-}
-
-function resetFilter(){
-  fromFilter = "";
-  toFilter   = "";
-  document.getElementById("fromDate").value = "";
-  document.getElementById("toDate").value = "";
-  renderReviews();
-}
-
-loadReviews();
-</script>
 
 <!-- Автоматическое закрытие бургер-меню при переходе по ссылке -->
-<script>
-  document.querySelectorAll(".side-menu a").forEach(link => {
-    link.addEventListener("click", () => {
-      const toggle = document.getElementById("menuToggle");
-      if (toggle) toggle.checked = false;
-    });
-  });
-</script>
+
 
 </body>
 </html>

@@ -1,0 +1,5 @@
+node_modules/
+.backup-original/
+*.log
+*.bak
+.server-pid

@@ -200,6 +200,8 @@ h3{margin:12px 0 8px;color:#333}
   margin-bottom:8px;
 }
 </style>
+<link rel="stylesheet" href="app.css">
+<script src="app.js" defer></script>
 </head>
 
 <body>
@@ -345,14 +347,7 @@ h3{margin:12px 0 8px;color:#333}
 </section>
 
 <!-- Авто-закрытие бургер-меню -->
-<script>
-document.querySelectorAll(".side-menu a").forEach(link => {
-  link.addEventListener("click", () => {
-    const toggle = document.getElementById("menuToggle");
-    if(toggle) toggle.checked = false;
-  });
-});
-</script>
+
 
 </body>
 </html>

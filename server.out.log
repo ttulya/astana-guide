@@ -1,0 +1,4 @@
+RelaxCaps: http://localhost:3000
+SQL Server: .\SQLEXPRESS
+Database: RelaxCapsSiteDB
+Stop: Ctrl+C

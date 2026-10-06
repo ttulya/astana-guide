@@ -40,6 +40,8 @@ input{width:100%;padding:10px;margin:6px 0;border-radius:6px;border:1px solid #a
 .status-done{background:#4caf50;}       /* Завершён — зелёная */
 .status-cancelled{background:#f44336;}  /* Отменена — красная */
 </style>
+<link rel="stylesheet" href="app.css">
+<script src="app.js" defer></script>
 </head>
 <body>
 
@@ -68,11 +70,11 @@ input{width:100%;padding:10px;margin:6px 0;border-radius:6px;border:1px solid #a
       <p><b>Регистрация нового пользователя</b></p>
       <p>Заполните данные, чтобы создать профиль и сохранять свои бронирования.</p>
     </div>
-    <input id="firstName" placeholder="Имя">
-    <input id="lastName" placeholder="Фамилия">
-    <input id="phone" placeholder="Номер телефона">
-    <input id="authLogin" placeholder="Логин">
-    <input id="authPass" type="password" placeholder="Пароль">
+    <label class="field-label" for="firstName">Имя (для регистрации)</label><input id="firstName" placeholder="Имя" maxlength="50" autocomplete="given-name">
+    <label class="field-label" for="lastName">Фамилия (для регистрации)</label><input id="lastName" placeholder="Фамилия" maxlength="50" autocomplete="family-name">
+    <label class="field-label" for="phone">Телефон (для регистрации)</label><input id="phone" type="tel" placeholder="+7 7xx xxx xx xx" maxlength="30" autocomplete="tel">
+    <label class="field-label" for="authLogin">Логин</label><input id="authLogin" placeholder="Логин" maxlength="50" autocomplete="username">
+    <label class="field-label" for="authPass">Пароль</label><input id="authPass" type="password" placeholder="Минимум 8 символов" autocomplete="current-password"><p style="font-size:.85em;color:#555;margin:8px 0">Для входа достаточно логина и пароля.</p>
     <button class="btn" onclick="login()">Войти</button>
     <button class="btn" onclick="register()">Создать аккаунт</button>
   </div>
@@ -81,120 +83,36 @@ input{width:100%;padding:10px;margin:6px 0;border-radius:6px;border:1px solid #a
     <h3>Профиль</h3>
     <div id="userInfo" class="info-box"></div>
 
+    <div class="profile-actions">
+      <button class="btn" onclick="document.getElementById('editProfile').hidden=!document.getElementById('editProfile').hidden">Редактировать профиль</button>
+      <a class="btn" href="booking.html">Забронировать</a>
+      <a class="btn" id="adminLink" href="admin.html" hidden>Админ-панель</a>
+    </div>
+    <div class="profile-edit" id="editProfile" hidden>
+      <h3>Редактирование профиля</h3>
+      <label class="field-label" for="editfirstName">Имя</label><input id="editfirstName" maxlength="50" autocomplete="given-name">
+      <label class="field-label" for="editlastName">Фамилия</label><input id="editlastName" maxlength="50" autocomplete="family-name">
+      <label class="field-label" for="editphone">Телефон</label><input id="editphone" type="tel" maxlength="30" autocomplete="tel">
+      <button class="btn" onclick="saveProfile()">Сохранить профиль</button>
+    </div>
     <h3>Ваши бронирования</h3>
     <div id="myBookings"></div>
 
     <button class="btn" onclick="logout()">Выйти</button>
+    <details class="import-panel">
+      <summary>Перенести старый профиль и бронирования</summary>
+      <p>Если раньше вы открывали сайт как файл, откройте profile.html в том же браузере и нажмите «Скачать старые данные». Здесь выберите сохранённый файл. Логин аккаунта должен совпадать со старым.</p>
+      <p>Перенос обновит имя и телефон. ID старых броней сохранятся; повторный перенос не создаст копии. Статус старых броней проверяет администратор.</p>
+      <label class="field-label" for="legacyFile">Файл со старыми данными</label><input id="legacyFile" type="file" accept=".json,application/json">
+      <button class="btn" onclick="importLegacy()">Перенести данные</button>
+    </details>
   </div>
 </section>
 
-<script>
-let user = JSON.parse(localStorage.getItem("user") || "null");
 
-function register(){
-  const firstName = firstNameInput.value.trim();
-  const lastName  = lastNameInput.value.trim();
-  const phone     = phoneInput.value.trim();
-  const login     = authLogin.value.trim();
-  const pass      = authPass.value.trim();
-
-  if(!firstName || !lastName || !phone || !login || !pass){
-    alert("Пожалуйста, заполните все поля для регистрации.");
-    return;
-  }
-
-  const newUser = {
-    firstName,
-    lastName,
-    phone,
-    login,
-    pass,
-    bookings: []
-  };
-
-  localStorage.setItem("user", JSON.stringify(newUser));
-  user = newUser;
-  alert("Аккаунт создан! Теперь вы можете просматривать свои бронирования.");
-  renderProfile();
-}
-
-function login(){
-  const login = authLogin.value.trim();
-  const pass  = authPass.value.trim();
-
-  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-  if(storedUser && storedUser.login === login && storedUser.pass === pass){
-    user = storedUser;
-    renderProfile();
-  } else {
-    alert("Неверный логин или пароль.");
-  }
-}
-
-function renderProfile(){
-  if(!user) return;
-
-  authBlock.style.display = "none";
-  profileBlock.style.display = "block";
-
-  userInfo.innerHTML = `
-    <p><b>Имя:</b> ${user.firstName || "-"} ${user.lastName || ""}</p>
-    <p><b>Телефон:</b> ${user.phone || "-"}</p>
-    <p><b>Логин:</b> ${user.login || "-"}</p>
-  `;
-
-  const allBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-  const bookings = allBookings.filter(b => b.phone === user.phone);
-
-  if(!bookings.length){
-    myBookings.innerHTML = "<p>У вас пока нет бронирований.</p>";
-  } else {
-    myBookings.innerHTML = bookings.map(b => {
-      const statusValue = b.status || "new";
-      const labels = {
-        new: "Новая",
-        processed: "Обработана",
-        done: "Сеанс завершён",
-        cancelled: "Отменена"
-      };
-      const label = labels[statusValue] || "Новая";
-
-      return `
-        <div class="booking-item">
-          <p><b>ID:</b> ${b.id}</p>
-          <p><b>Дата:</b> ${b.date} в ${b.time}, ${b.duration} ч.</p>
-          <p><b>Телефон:</b> ${b.phone}</p>
-          <p><b>Статус:</b>
-            <span class="status-badge status-${statusValue}">${label}</span>
-          </p>
-        </div>
-      `;
-    }).join("");
-  }
-}
-
-function logout(){
-  profileBlock.style.display = "none";
-  authBlock.style.display = "block";
-}
-
-if(user) renderProfile();
-
-// Удобные ссылки на элементы:
-const firstNameInput = document.getElementById("firstName");
-const lastNameInput  = document.getElementById("lastName");
-const phoneInput     = document.getElementById("phone");
-</script>
 
 <!-- Авто-закрытие бургер-меню -->
-<script>
-document.querySelectorAll(".side-menu a").forEach(link => {
-  link.addEventListener("click", () => {
-    const toggle = document.getElementById("menuToggle");
-    if (toggle) toggle.checked = false;
-  });
-});
-</script>
+
 
 </body>
 </html>
